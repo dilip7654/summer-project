@@ -5,12 +5,14 @@ import Chat from './pages/Chat';
 import CodeEditor from './pages/CodeEditor';
 import Meetings from './pages/Meetings';
 import FileShare from './pages/FileShare';
+import LandingPage from './pages/LandingPage';
 
 function App() {
   return (
     <Router>
       <Navbar />
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/" element={<Dashboard />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/editor" element={<CodeEditor />} />
