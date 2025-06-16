@@ -1,11 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import Sidebar from './components/Navbar'; // Add this import
+import Navbar from './components/Navbar'; // Add this import
+import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Chat from './pages/Chat';
 import CodeEditor from './pages/CodeEditor';
 import Meetings from './pages/Meetings';
 import FileShare from './pages/FileShare';
 import LandingPage from './pages/LandingPage';
+import AuthSystem from './pages/Login';
 
 // Create a Layout component that includes the sidebar
 function Layout({ children }) {
@@ -61,6 +63,11 @@ function App() {
         <Route path="/file-share" element={
           <Layout>
             <FileShare />
+          </Layout>
+        } />
+         <Route path="/signin-up" element={
+          <Layout>
+            <AuthSystem />
           </Layout>
         } />
       </Routes>
