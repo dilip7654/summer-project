@@ -31,63 +31,87 @@ const AuthSystem = () => {
   e.preventDefault();
   const { email, password, confirmPassword, organizationCode } = formData;
 
-  try {
-    if (currentView === 'signup') {
-      if (password !== confirmPassword) {
-        return alert("Passwords do not match");
-      }
+try {
+  if (currentView === 'signup') {
+    if (password !== confirmPassword) {
+      return alert("Passwords do not match");
+    }
 
-      if (userRole === 'user' && formData.userType === 'employee') {
-        // Employee: Check if org code exists
-        const orgSnapshot = await getDoc(doc(db, "organizations", organizationCode));
-        if (!orgSnapshot.exists()) {
-          return alert("Invalid Organization Code. Please check and try again.");
-        }
-      }
-
-      // Create user
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Generate and store org code if admin
-      let newOrgCode = null;
-      if (userRole === 'admin') {
-        newOrgCode = generateOrgCode();
-        await setDoc(doc(db, "organizations", newOrgCode), {
-          createdBy: email,
-          organizationName: formData.organizationName,
-          createdAt: new Date()
-        });
-        alert(`Organization created! Your code is: ${newOrgCode}`);
-      }
-
-      // Save user data
-      await setDoc(doc(db, "users", user.uid), {
-        email,
-        role: userRole,
-        userType: userRole === "user" ? formData.userType : null,
-        fullName: formData.fullName,
-        organizationName: formData.organizationName || null,
-        organizationCode: userRole === 'admin' ? newOrgCode : organizationCode || null,
-        createdAt: new Date()
-      });
-
-      alert("Signup successful!");
-    } else {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      if (userDoc.exists()) {
-        const data = userDoc.data();
-        alert(`Login successful as ${data.role}${data.userType ? " (" + data.userType + ")" : ""}`);
-      } else {
-        alert("Login successful, but user role data not found.");
+    if (userRole === 'user' && formData.userType === 'employee') {
+      // Employee: Check if org code exists
+      const orgSnapshot = await getDoc(doc(db, "organizations", organizationCode));
+      if (!orgSnapshot.exists()) {
+        return alert("Invalid Organization Code. Please check and try again.");
       }
     }
-  } catch (error) {
-    alert(`Error: ${error.message}`);
+
+    // Create user
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Generate and store org code if admin
+    let newOrgCode = null;
+    if (userRole === 'admin') {
+      newOrgCode = generateOrgCode();
+      await setDoc(doc(db, "organizations", newOrgCode), {
+        createdBy: email,
+        organizationName: formData.organizationName,
+        createdAt: new Date()
+      });
+      alert(`Organization created! Your code is: ${newOrgCode}`);
+    }
+
+    // Save user data
+    await setDoc(doc(db, "users", user.uid), {
+      email,
+      role: userRole,
+      userType: userRole === "user" ? formData.userType : null,
+      fullName: formData.fullName,
+      organizationName: formData.organizationName || null,
+      organizationCode: userRole === 'admin' ? newOrgCode : organizationCode || null,
+      createdAt: new Date()
+    });
+
+    alert("Signup successful!");
+
+    // ✅ Reset form
+    setFormData({
+      fullName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      organizationName: '',
+      organizationCode: '',
+      userType: '',
+    });
+
+  } else {
+    // Login
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      alert(`Login successful as ${data.role}${data.userType ? " (" + data.userType + ")" : ""}`);
+    } else {
+      alert("Login successful, but user role data not found.");
+    }
+
+    // ✅ Reset form
+    setFormData({
+      fullName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      organizationName: '',
+      organizationCode: '',
+      userType: '',
+    });
   }
+} catch (error) {
+  alert(`Error: ${error.message}`);
+}
 }, [currentView, formData, userRole, generateOrgCode]);
 
 
