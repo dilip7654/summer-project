@@ -3,7 +3,7 @@ import { Eye, EyeOff, Users, Shield, Code, Hash, Mail, Lock, User, Building, Git
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db, googleProvider, githubProvider } from '../components/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+ import { useNavigate } from 'react-router-dom';
 
 
 const AuthSystem = () => {
@@ -19,7 +19,7 @@ const AuthSystem = () => {
     organizationCode: '',
     userType: 'self'
   });
-  const navigate = useNavigate();
+   const navigate = useNavigate();
 
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -28,6 +28,11 @@ const AuthSystem = () => {
 
   const generateOrgCode = useCallback(() => {
     return Math.random().toString(36).substr(2, 8).toUpperCase();
+  }, []);
+
+  const handleForgotPassword = useCallback(() => {
+     navigate('/forgot-password');
+    console.log('Navigate to forgot password page');
   }, []);
 
   const handleSubmit = useCallback(async (e) => {
@@ -77,7 +82,6 @@ try {
 
     alert("Signup successful!");
 
-
     // ✅ Reset form
     setFormData({
       fullName: '',
@@ -88,7 +92,7 @@ try {
       organizationCode: '',
       userType: '',
     });
-    navigate('/');
+     navigate('/');
 
   } else {
     // Login
@@ -113,7 +117,7 @@ try {
       organizationCode: '',
       userType: '',
     });
-    navigate('/');
+     navigate('/');
   }
 } catch (error) {
   alert(`Error: ${error.message}`);
@@ -218,7 +222,7 @@ try {
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+          <div onSubmit={handleSubmit}>
             <div className="space-y-6">
               {currentView === 'signup' && (
                 <div className="relative">
@@ -239,6 +243,19 @@ try {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
+
+              {/* Forgot Password Link - Only show on login */}
+              {currentView === 'login' && (
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    className="text-sm text-blue-400 hover:text-blue-300 transition-colors duration-200 focus:outline-none hover:underline"
+                  >
+                    Forgot your password?
+                  </button>
+                </div>
+              )}
 
               {currentView === 'signup' && (
                 <div className="relative">
@@ -280,11 +297,11 @@ try {
                 </>
               )}
 
-              <button type="submit" className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+              <button type="submit" onClick={handleSubmit} className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50">
                 {currentView === 'login' ? 'Sign In' : 'Create Account'}
               </button>
             </div>
-          </form>
+          </div>
 
           <div className="flex items-center my-6">
             <div className="flex-1 border-t border-gray-600"></div>

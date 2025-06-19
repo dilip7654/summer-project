@@ -8,6 +8,7 @@ import Meetings from './pages/Meetings';
 import FileShare from './pages/FileShare';
 import LandingPage from './pages/LandingPage';
 import AuthSystem from './pages/Login';
+import ForgetPassword from './components/Forgotpassword'
 
 // Create a Layout component that includes the sidebar
 function Layout({ children }) {
@@ -68,6 +69,11 @@ function App() {
          <Route path="/signin-up" element={
           <Layout>
             <AuthSystem />
+          </Layout>
+        } />
+        <Route path="/forgot-password" element={
+          <Layout>
+            < ForgetPassword/>
           </Layout>
         } />
       </Routes>
