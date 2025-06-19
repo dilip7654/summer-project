@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, 
   MessageCircle, 
@@ -9,12 +9,43 @@ import {
   ChevronRight,
   Home,
   LogIn,
+  LogOut,
   UserPlus
 } from 'lucide-react';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from '../components/firebase'; 
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ currentPath, onNavigate }) => {
   const [isExpanded, setIsExpanded] = useState(true);
-  
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    setIsLoggedIn(false);
+    navigate('/');
+  };
+
+  const handleNavigation = (path) => {
+    if (onNavigate) {
+      onNavigate(path);
+    } else {
+      navigate(path);
+    }
+  };
+
+  const toggleSidebar = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   const menuItems = [
     { icon: Home, label: 'Home', path: '/' },
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
@@ -22,19 +53,10 @@ const Sidebar = ({ currentPath, onNavigate }) => {
     { icon: Code, label: 'Code Editor', path: '/code-editor' },
     { icon: Video, label: 'Meetings', path: '/meetings' },
     { icon: Share2, label: 'File Share', path: '/file-share' },
-    { icon: UserPlus, label: 'Login', path: '/signin-up' }
-
+    !isLoggedIn
+      ? { icon: LogIn, label: 'Login', path: '/signin-up' }
+      : { icon: LogOut, label: 'Logout', action: handleLogout }
   ];
-
-  const toggleSidebar = () => {
-    setIsExpanded(!isExpanded);
-  };
-
-  const handleNavigation = (path) => {
-    if (onNavigate) {
-      onNavigate(path);
-    }
-  };
 
   return (
     <div className={`
@@ -71,11 +93,11 @@ const Sidebar = ({ currentPath, onNavigate }) => {
         {menuItems.map((item) => {
           const IconComponent = item.icon;
           const isActive = currentPath === item.path;
-          
+
           return (
             <button
-              key={item.path}
-              onClick={() => handleNavigation(item.path)}
+              key={item.label}
+              onClick={() => item.action ? item.action() : handleNavigation(item.path)}
               className={`
                 w-full flex items-center px-4 py-3 hover:bg-gray-800 transition-colors
                 ${isActive ? 'bg-gray-800 border-r-2 border-blue-500' : ''}
@@ -98,12 +120,16 @@ const Sidebar = ({ currentPath, onNavigate }) => {
       <div className="p-4 border-t border-gray-700">
         <div className={`flex items-center ${isExpanded ? 'justify-start' : 'justify-center'}`}>
           <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0">
-            U
+            {isLoggedIn ? 'U' : '?'}
           </div>
           {isExpanded && (
             <div className="ml-3 min-w-0">
-              <div className="text-sm font-medium truncate">User</div>
-              <div className="text-xs text-gray-400">Online</div>
+              <div className="text-sm font-medium truncate">
+                {isLoggedIn ? 'User' : 'Guest'}
+              </div>
+              <div className="text-xs text-gray-400">
+                {isLoggedIn ? 'Online' : 'Offline'}
+              </div>
             </div>
           )}
         </div>

@@ -3,6 +3,8 @@ import { Eye, EyeOff, Users, Shield, Code, Hash, Mail, Lock, User, Building, Git
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db, googleProvider, githubProvider } from '../components/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+
 
 const AuthSystem = () => {
   const [currentView, setCurrentView] = useState('login');
@@ -17,6 +19,7 @@ const AuthSystem = () => {
     organizationCode: '',
     userType: 'self'
   });
+  const navigate = useNavigate();
 
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -74,6 +77,7 @@ try {
 
     alert("Signup successful!");
 
+
     // ✅ Reset form
     setFormData({
       fullName: '',
@@ -84,6 +88,7 @@ try {
       organizationCode: '',
       userType: '',
     });
+    navigate('/');
 
   } else {
     // Login
@@ -108,6 +113,7 @@ try {
       organizationCode: '',
       userType: '',
     });
+    navigate('/');
   }
 } catch (error) {
   alert(`Error: ${error.message}`);
