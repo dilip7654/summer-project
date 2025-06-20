@@ -54,7 +54,7 @@ const Sidebar = ({ currentPath, onNavigate }) => {
     { icon: Video, label: 'Meetings', path: '/meetings' },
     { icon: Share2, label: 'File Share', path: '/file-share' },
     !isLoggedIn
-      ? { icon: LogIn, label: 'Login', path: '/signin-up' }
+      ? { icon: UserPlus, label: 'Login', path: '/signin-up' }
       : { icon: LogOut, label: 'Logout', action: handleLogout }
   ];
 
