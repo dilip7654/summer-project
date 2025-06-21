@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar'; 
 import Sidebar from './components/Sidebar';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/DashboardU';
+import AdminDashboard from './pages/DashboardA';
+import EmployeeDashboard from './pages/DashboardE';
 import Chat from './pages/Chat';
 import CodeEditor from './pages/CodeEditor';
 import Meetings from './pages/Meetings';
@@ -43,7 +45,7 @@ function App() {
         } />
         <Route path="/dashboard" element={
           <Layout>
-            <Dashboard />
+            <AdminDashboard />
           </Layout>
         } />
         <Route path="/chat" element={
