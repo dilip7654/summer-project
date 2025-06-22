@@ -43,9 +43,19 @@ function App() {
             <LandingPage />
           </Layout>
         } />
-        <Route path="/dashboard" element={
+        <Route path="/admindashboard" element={
           <Layout>
             <AdminDashboard />
+          </Layout>
+        } />
+        <Route path="/userdashboard" element={
+          <Layout>
+            <Dashboard />
+          </Layout>
+        } />
+        <Route path="/employeedashboard" element={
+          <Layout>
+            <EmployeeDashboard />
           </Layout>
         } />
         <Route path="/chat" element={

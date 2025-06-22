@@ -8,7 +8,6 @@ import {
   ChevronLeft, 
   ChevronRight,
   Home,
-  LogIn,
   LogOut,
   UserPlus
 } from 'lucide-react';
@@ -19,11 +18,20 @@ import { useNavigate } from 'react-router-dom';
 const Sidebar = ({ currentPath, onNavigate }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState(null); // new state for role
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsLoggedIn(!!user);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setIsLoggedIn(true);
+        // Example: getting role from localStorage or user metadata
+        const role = localStorage.getItem('userRole'); // 'admin' | 'employee' | 'user'
+        setUserRole(role || 'user');
+      } else {
+        setIsLoggedIn(false);
+        setUserRole(null);
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -31,10 +39,16 @@ const Sidebar = ({ currentPath, onNavigate }) => {
   const handleLogout = async () => {
     await signOut(auth);
     setIsLoggedIn(false);
+    setUserRole(null);
     navigate('/');
   };
 
   const handleNavigation = (path) => {
+    if (!isLoggedIn && path.includes('dashboard')) {
+      alert('Please log in to access the dashboard.');
+      return;
+    }
+
     if (onNavigate) {
       onNavigate(path);
     } else {
@@ -46,9 +60,18 @@ const Sidebar = ({ currentPath, onNavigate }) => {
     setIsExpanded(!isExpanded);
   };
 
+  // Base items
   const menuItems = [
     { icon: Home, label: 'Home', path: '/' },
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+    ...(userRole === 'user' ? [
+      { icon: LayoutDashboard, label: 'Dashboard', path: '/userdashboard' }
+    ] : []),
+    ...(userRole === 'employee' ? [
+      { icon: LayoutDashboard, label: 'Dashboard', path: '/employeedashboard' }
+    ] : []),
+    ...(userRole === 'admin' ? [
+      { icon: LayoutDashboard, label: 'Dashboard', path: '/admindashboard' }
+    ] : []),
     { icon: MessageCircle, label: 'Chat', path: '/chat' },
     { icon: Code, label: 'Code Editor', path: '/code-editor' },
     { icon: Video, label: 'Meetings', path: '/meetings' },
