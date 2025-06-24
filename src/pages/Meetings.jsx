@@ -182,6 +182,8 @@ const MeetingPlatform = () => {
       agenda: ''
     });
   };
+  console.log("Rendering Modal"); // Place inside your Modal component
+console.log("Rendering Parent"); // Place in parent
 
   const handleJoinMeeting = (meeting) => {
     window.open(meeting.meetingLink, '_blank');
@@ -368,11 +370,19 @@ const MeetingPlatform = () => {
     );
   };
 
-  const Modal = ({ show, onClose, title, children }) => {
-    if (!show) return null;
-    
-    return (
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+  const Modal = React.memo(({ show, onClose, title, children }) => {
+  return (
+    <div
+      className={`fixed inset-0 z-50 p-4 transition-opacity duration-300 ${
+        show ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+      }`}
+    >
+      <div
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        onClick={onClose}
+      ></div>
+
+      <div className="relative z-10 flex items-center justify-center min-h-full">
         <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6 w-full max-w-md border border-slate-700/50 shadow-2xl">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-white">{title}</h2>
@@ -386,8 +396,10 @@ const MeetingPlatform = () => {
           {children}
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+});
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 text-white">
