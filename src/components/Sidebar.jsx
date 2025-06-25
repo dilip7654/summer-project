@@ -14,25 +14,40 @@ import {
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../components/firebase'; 
 import { useNavigate } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../components/firebase'; // ✅ Ensure this points to your Firestore instance
 
 const Sidebar = ({ currentPath, onNavigate }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState(null); // new state for role
+  const [userRole, setUserRole] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setIsLoggedIn(true);
-        // Example: getting role from localStorage or user metadata
-        const role = localStorage.getItem('userRole'); // 'admin' | 'employee' | 'user'
-        setUserRole(role || 'user');
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            const role = userDoc.data().role || 'user';
+            setUserRole(role);
+          } else {
+            console.warn('User document not found.');
+            setUserRole('user');
+          }
+        } catch (err) {
+          console.error('Error fetching user role:', err);
+          setUserRole('user');
+        }
       } else {
         setIsLoggedIn(false);
         setUserRole(null);
       }
+      setLoading(false);
     });
+
     return () => unsubscribe();
   }, []);
 
@@ -60,18 +75,24 @@ const Sidebar = ({ currentPath, onNavigate }) => {
     setIsExpanded(!isExpanded);
   };
 
-  // Base items
+  if (loading) return null; // prevent early render before role is fetched
+
+  // Build dashboard path based on userRole
+  const getDashboardPath = () => {
+    switch (userRole) {
+      case 'admin':
+        return '/admindashboard';
+      case 'employee':
+        return '/employeedashboard';
+      case 'user':
+      default:
+        return '/userdashboard';
+    }
+  };
+
   const menuItems = [
     { icon: Home, label: 'Home', path: '/' },
-    ...(userRole === 'user' ? [
-      { icon: LayoutDashboard, label: 'Dashboard', path: '/userdashboard' }
-    ] : []),
-    ...(userRole === 'employee' ? [
-      { icon: LayoutDashboard, label: 'Dashboard', path: '/employeedashboard' }
-    ] : []),
-    ...(userRole === 'admin' ? [
-      { icon: LayoutDashboard, label: 'Dashboard', path: '/admindashboard' }
-    ] : []),
+    ...(userRole ? [{ icon: LayoutDashboard, label: 'Dashboard', path: getDashboardPath() }] : []),
     { icon: MessageCircle, label: 'Chat', path: '/chat' },
     { icon: Code, label: 'Code Editor', path: '/code-editor' },
     { icon: Video, label: 'Meetings', path: '/meetings' },
