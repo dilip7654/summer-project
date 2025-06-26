@@ -5,8 +5,6 @@ import {
   Code, 
   Video, 
   Share2, 
-  ChevronLeft, 
-  ChevronRight,
   Home,
   LogOut,
   UserPlus
@@ -106,30 +104,22 @@ const Sidebar = ({ currentPath, onNavigate }) => {
     <div className={`
       bg-gray-900 text-white h-screen transition-all duration-300 ease-in-out
       ${isExpanded ? 'w-64' : 'w-16'}
-      flex flex-col relative border-r border-gray-700 z-10
+      flex flex-col border-r border-gray-700 z-10
     `}>
-      {/* Toggle Button */}
-      <button
-        onClick={toggleSidebar}
-        className="absolute -right-3 top-6 bg-gray-700 hover:bg-gray-600 rounded-full p-1 border border-gray-600 transition-colors z-20"
-      >
-        {isExpanded ? (
-          <ChevronLeft className="w-4 h-4" />
-        ) : (
-          <ChevronRight className="w-4 h-4" />
-        )}
-      </button>
-
-      {/* Header */}
+      {/* Header - Now clickable to toggle sidebar */}
       <div className="p-4 border-b border-gray-700">
-        <div className={`flex items-center ${isExpanded ? 'justify-start' : 'justify-center'}`}>
-          <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center font-bold">
-            A
+        <button
+          onClick={toggleSidebar}
+          className={`flex items-center w-full hover:bg-gray-800 rounded-lg p-2 transition-colors ${isExpanded ? 'justify-start' : 'justify-center'}`}
+          title={!isExpanded ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center font-bold flex-shrink-0">
+            T
           </div>
           {isExpanded && (
-            <span className="ml-3 font-semibold text-lg">Team collab</span>
+            <span className="ml-3 font-semibold text-lg whitespace-nowrap">Team collab</span>
           )}
-        </div>
+        </button>
       </div>
 
       {/* Navigation Items */}
