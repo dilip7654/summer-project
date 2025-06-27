@@ -11,6 +11,7 @@ import FileShare from './pages/FileShare';
 import LandingPage from './pages/LandingPage';
 import AuthSystem from './pages/Login';
 import ForgetPassword from './components/Forgotpassword'
+import UserProfile from './pages/Userprofile';
 
 // Create a Layout component that includes the sidebar
 function Layout({ children }) {
@@ -86,6 +87,11 @@ function App() {
         <Route path="/forgot-password" element={
           <Layout>
             < ForgetPassword/>
+          </Layout>
+        } />
+        <Route path="/user-profile" element={
+          <Layout>
+            < UserProfile/>
           </Layout>
         } />
       </Routes>

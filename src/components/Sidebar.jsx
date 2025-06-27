@@ -13,7 +13,7 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../components/firebase'; 
 import { useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../components/firebase'; // ✅ Ensure this points to your Firestore instance
+import { db } from '../components/firebase';
 
 const Sidebar = ({ currentPath, onNavigate }) => {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -73,9 +73,8 @@ const Sidebar = ({ currentPath, onNavigate }) => {
     setIsExpanded(!isExpanded);
   };
 
-  if (loading) return null; // prevent early render before role is fetched
+  if (loading) return null;
 
-  // Build dashboard path based on userRole
   const getDashboardPath = () => {
     switch (userRole) {
       case 'admin':
@@ -106,7 +105,7 @@ const Sidebar = ({ currentPath, onNavigate }) => {
       ${isExpanded ? 'w-64' : 'w-16'}
       flex flex-col border-r border-gray-700 z-10
     `}>
-      {/* Header - Now clickable to toggle sidebar */}
+      {/* Header */}
       <div className="p-4 border-b border-gray-700">
         <button
           onClick={toggleSidebar}
@@ -150,14 +149,18 @@ const Sidebar = ({ currentPath, onNavigate }) => {
         })}
       </nav>
 
-      {/* Footer */}
+      {/* Footer (Clickable User Profile) */}
       <div className="p-4 border-t border-gray-700">
-        <div className={`flex items-center ${isExpanded ? 'justify-start' : 'justify-center'}`}>
+        <button
+          onClick={() => handleNavigation('/user-profile')}
+          className={`flex items-center w-full hover:bg-gray-800 p-2 rounded-lg transition-colors ${isExpanded ? 'justify-start' : 'justify-center'}`}
+          title="Go to Profile"
+        >
           <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0">
             {isLoggedIn ? 'U' : '?'}
           </div>
           {isExpanded && (
-            <div className="ml-3 min-w-0">
+            <div className="ml-3 min-w-0 text-left">
               <div className="text-sm font-medium truncate">
                 {isLoggedIn ? 'User' : 'Guest'}
               </div>
@@ -166,7 +169,7 @@ const Sidebar = ({ currentPath, onNavigate }) => {
               </div>
             </div>
           )}
-        </div>
+        </button>
       </div>
     </div>
   );
