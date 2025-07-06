@@ -1,17 +1,17 @@
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar'; 
 import Sidebar from './components/Sidebar';
-import Dashboard from './pages/UserDashboard';
-import AdminDashboard from './pages/AdminDashboard';
-import EmployeeDashboard from './pages/EmployeeDashboard';
-import Chat from './pages/Chat';
+import Dashboard from './pages/dashbardpage/UserDashboard';
+import AdminDashboard from './pages/dashbardpage/AdminDashboard';
+import EmployeeDashboard from './pages/dashbardpage/EmployeeDashboard';
+import Chat from './pages/chatpage/Chat';
 import CodeEditor from './pages/CodeEditor';
 import Meetings from './pages/Meetings';
 import FileShare from './pages/FileShare';
 import LandingPage from './pages/LandingPage';
 import AuthSystem from './pages/Login';
 import ForgetPassword from './components/Forgotpassword'
-import UserProfile from './pages/Userprofile';
+import UserProfile from './pages/profilepage/Userprofile';
 
 // Create a Layout component that includes the sidebar
 function Layout({ children }) {
