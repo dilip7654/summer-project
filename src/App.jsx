@@ -7,7 +7,7 @@ import EmployeeDashboard from './pages/dashbardpage/EmployeeDashboard';
 import Chat from './pages/chatpage/Chat';
 import CodeEditor from './pages/CodeEditor';
 import Meetings from './pages/Meetings';
-import FileShare from './pages/FileShare';
+import FileShare from './pages/filesharepage/FileShare';
 import LandingPage from './pages/LandingPage';
 import AuthSystem from './pages/Login';
 import ForgetPassword from './components/Forgotpassword'
