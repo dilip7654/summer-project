@@ -6,7 +6,7 @@ import AdminDashboard from './pages/dashbardpage/AdminDashboard';
 import EmployeeDashboard from './pages/dashbardpage/EmployeeDashboard';
 import Chat from './pages/chatpage/Chat';
 import CodeEditor from './pages/CodeEditor';
-import Meetings from './pages/Meetings';
+import Meetings from './pages/meetingpages/Meetings';
 import FileShare from './pages/filesharepage/FileShare';
 import LandingPage from './pages/LandingPage';
 import AuthSystem from './pages/Login';
